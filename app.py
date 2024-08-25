@@ -26,6 +26,7 @@ class Ticket:
 
 class CmdLineApp:
     lists = Dict[str, List[Ticket]]
+
     def __init__(self) -> None:
         self.lists = {}
 
@@ -37,6 +38,7 @@ class CmdLineApp:
         id_ = self.get_next_index(self.lists)
         ticket = Ticket(id_, task, minutes, parent_id, other)
         self.lists[dest_list].append(ticket)
+        self.display()
 
     def move(self, ticket_id: int, dest_list: str):
         try:
@@ -48,6 +50,7 @@ class CmdLineApp:
             self.lists[ticket_index[0]].pop(ticket_index[1])
         except Exception as e:
             logger.error(f"Failed to move ticket {e}")
+        self.display()
 
     def remove(self, ticket_id: int):
         ticket_index = self.get_ticket_index(ticket_id)
@@ -55,14 +58,15 @@ class CmdLineApp:
             print("No ticket Found")
             return
         self.lists[ticket_index[0]].pop(ticket_index[1])
+        self.display()
 
-    def store_all(self, filename: str = "/Users/ollieellis/prototypes/tkt/tickets.json"):
+    def store_all(self, filename: str = "/Users/ollieellis/prototypes/pytkt/tickets.json"):
         json_dict = self.list_to_dict(self.lists)
         with open(filename, 'w') as f:
             json.dump(json_dict, f, indent=4)
 
 
-    def load_all(self, default_lists: List[str]=DEFAULT_LISTS, filename: str = "/Users/ollieellis/prototypes/tkt/tickets.json"):
+    def load_all(self, default_lists: List[str]=DEFAULT_LISTS, filename: str = "/Users/ollieellis/prototypes/pytkt/tickets.json"):
         try:
             lists = {i: [] for i in default_lists}
             with open(filename, 'r') as f:
