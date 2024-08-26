@@ -1,4 +1,4 @@
-from app import Ticket, CmdLineApp
+from pytkt.app import Ticket, CmdLineApp
 
 cmd = CmdLineApp()
 
@@ -78,3 +78,53 @@ class TestDisplay:
         cmd.display(lists)
 
 
+class TestUnpackAddParams:
+
+    def test_minimal_params(self):
+        params = ["test_task", "Done"]
+        fname = "test_dir/added.json"
+        cmd = CmdLineApp()
+        t = cmd.unpack_add_params(params)
+        assert t == ["test_task", "Done", None, None, None]
+
+    def test_to_many(self):
+        params = list(range(0, 10))
+        cmd = CmdLineApp()
+        assert cmd.unpack_add_params(params) == [0, 1, 2, 3, 4]
+
+class TestGetTicketIndex:
+
+    def test_ez(self):
+        cmd = CmdLineApp()
+        cmd.lists = self.get_simple_test_case()
+        assert cmd.get_ticket_index(2) == ("test_list", 1) #0 index list
+
+    def get_simple_test_case(self):
+        return  {"test_list":
+            [
+                Ticket(**{
+                    "id_": 1,
+                    "task": "test",
+                    "minutes": None,
+                    "parent_id": None,
+                    "other": {}
+                }),
+                Ticket(**{
+                    "id_": 2,
+                    "task": "test2",
+                    "minutes": None,
+                    "parent_id": None,
+                    "other": {}
+                })
+            ],
+            "test_list2":
+            [
+                Ticket(**{
+                    "id_": 3,
+                    "task": "test3",
+                    "minutes": None,
+                    "parent_id": None,
+                    "other": {}
+                })
+            ],
+        }
