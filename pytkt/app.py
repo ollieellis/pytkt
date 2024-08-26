@@ -9,7 +9,7 @@
 #spend the absolute minum time developing this; primative types allowed, low qualitity tests to
 
 from dataclasses import dataclass, asdict, field
-from typing import Dict, List
+from typing import Dict, List, Optional
 import json
 from loguru import logger
 
@@ -26,9 +26,11 @@ class Ticket:
 
 class CmdLineApp:
     lists = Dict[str, List[Ticket]]
+    tkt_filename = str
 
-    def __init__(self) -> None:
+    def __init__(self, tkt_filename=None) -> None:
         self.lists = {}
+        self.tkt_filename = tkt_filename
 
     def dispacth(self, argsv):
         if len(argsv) == 1:
@@ -42,6 +44,8 @@ class CmdLineApp:
                 self.add_func(argsv[2:])
             case "remove":
                 self.remove_func(argsv[2:])
+            case _:
+                logger.error("Command Not Recognized")
 
         self.display()
         try:
@@ -92,13 +96,15 @@ class CmdLineApp:
             return
         self.lists[ticket_index[0]].pop(ticket_index[1])
 
-    def store_all(self, filename: str = "/Users/ollieellis/prototypes/pytkt/tickets.json"):
+    def store_all(self, filename: Optional[str] = None):
         json_dict = self.list_to_dict(self.lists)
         with open(filename, 'w') as f:
             json.dump(json_dict, f, indent=4)
 
 
-    def load_all(self, default_lists: List[str]=DEFAULT_LISTS, filename: str = "/Users/ollieellis/prototypes/pytkt/tickets.json"):
+    def load_all(self, default_lists: List[str]=DEFAULT_LISTS, filename: Optional[str] = None):
+        if filename is None:
+            filename = self.tkt_filename
         try:
             lists = {i: [] for i in default_lists}
             with open(filename, 'r') as f:
