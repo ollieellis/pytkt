@@ -1,6 +1,6 @@
 import code
 
-from app import CmdLineApp, Ticket
+from pytkt.app import CmdLineApp, Ticket
 
 try:
     cmd = CmdLineApp()

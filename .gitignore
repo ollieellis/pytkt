@@ -2,3 +2,6 @@ menv/*
 __pycache__/*
 .vscode/*
 .pytest_cache/*
+
+pytkt/__pycache__/*
+pytkt/.pytest_cache/*
