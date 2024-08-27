@@ -12,6 +12,7 @@ from dataclasses import dataclass, asdict, field
 from typing import Dict, List, Optional
 import json
 from loguru import logger
+import time
 
 DEFAULT_LISTS = ["BackLog", "InProgress", "Done", "Blocked"]
 
@@ -44,6 +45,8 @@ class CmdLineApp:
                 self.add_func(argsv[2:])
             case "remove":
                 self.remove_func(argsv[2:])
+            case "start":
+                self.start_func(argsv[2:])
             case _:
                 logger.error("Command Not Recognized")
 
@@ -68,6 +71,15 @@ class CmdLineApp:
     def remove_func(self, remaining_args):
         ticket_id = self.unpack_remove_args(remaining_args)
         self.remove(ticket_id)
+
+    def start_func(self, remaining_args):
+        ticket_id = self.unpack_remove_args(remaining_args)
+        ticket_index = self.get_ticket_index(ticket_id)
+        t = self.lists[ticket_index[0]][ticket_index[1]] #magic funcs these
+        time = t.minutes
+        if time is None:
+            time = int(input(f"For how long? minutes: int \n"))
+        self.start(ticket_id, time)
 
     def add(self, task: str, dest_list: str, minutes: int=None, parent_id=None, other=None):
         if dest_list not in self.lists:
@@ -96,7 +108,14 @@ class CmdLineApp:
             return
         self.lists[ticket_index[0]].pop(ticket_index[1])
 
+    def start(self, ticket_id: int, time: int):
+        self.move(ticket_id, "InProgress")
+        self.store_all()
+        self.print_timer(time)
+
     def store_all(self, filename: Optional[str] = None):
+        if filename is None:
+            filename = self.tkt_filename
         json_dict = self.list_to_dict(self.lists)
         with open(filename, 'w') as f:
             json.dump(json_dict, f, indent=4)
@@ -126,10 +145,20 @@ class CmdLineApp:
             print("-"*60)
 
     def unpack_add_params(self, remaining_args):
-        if len(remaining_args) < 2:
-            print("Add requires Task def: str and dest_list: str as minumum")
+        if len(remaining_args) < 1:
+            print("Add requires Task def: str as minumum")
             return
         params = remaining_args + [None]*max(0, 5-len(remaining_args))
+        try:
+            minutes = int(remaining_args[1])
+            params[1] = None
+            params[2] = minutes
+        except:
+            pass
+
+        if params[1] == None:
+            params[1] = "BackLog"
+    
         return params[:5]
     
     def unpack_move_params(self, remaining_args):
@@ -160,8 +189,13 @@ class CmdLineApp:
         return ticket_index
     
     def get_next_index(self, lists: Dict[str, List[Ticket]]):
-        max_id = -999
+        max_id = 0
         for lname, ticket_list in lists.items():
             for i, ticket in enumerate(ticket_list):
                 max_id = max(max_id, ticket.id_)
         return max_id + 1
+    
+    def print_timer(self, minutes: int):
+        for i in range(minutes, 0, -1):
+            print(f"{i} minutes left", end='\r')
+            time.sleep(60)
