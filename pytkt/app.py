@@ -47,6 +47,8 @@ class CmdLineApp:
                 self.remove_func(argsv[2:])
             case "start":
                 self.start_func(argsv[2:])
+            case "clear":
+                self.clear_func(argsv[2:])
             case _:
                 logger.error("Command Not Recognized")
 
@@ -71,6 +73,22 @@ class CmdLineApp:
     def remove_func(self, remaining_args):
         ticket_id = self.unpack_remove_args(remaining_args)
         self.remove(ticket_id)
+
+    def clear_func(self, remaining_args):
+        if len(remaining_args) == 0:
+            l = input("please supply list you would like to clear")
+        else:
+            l = remaining_args[0]
+        if l not in self.lists:
+            print(f"List {l} not found")
+            return
+
+        tasks_to_delete = [t.task for t in self.lists[l]]
+        self.lists[l] = []
+        self.display()
+        if input(f"Confirm Delete of tasks \n {tasks_to_delete}: Y/N").upper() not in ["Y", "YES"]:
+            exit()
+
 
     def start_func(self, remaining_args):
         ticket_id = self.unpack_remove_args(remaining_args)
@@ -137,7 +155,7 @@ class CmdLineApp:
     def display(self, others: bool=False):
         #this is really bad to test...
         #make this into a decorater
-        [print() for i in range(10)]
+        [print() for i in range(3)]
         for lname, ticket_list in self.lists.items():
             print(lname)
             for ticket in ticket_list:

@@ -1,6 +1,45 @@
 {
     "BackLog": [
         {
+            "id_": 7,
+            "task": "shared_models_write",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        },
+        {
+            "id_": 9,
+            "task": "deploy a working cv with transformer",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        }
+    ],
+    "InProgress": [
+        {
+            "id_": 2,
+            "task": "indexs and partions into cosmos",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        },
+        {
+            "id_": 8,
+            "task": "deploy_shared_models",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        },
+        {
+            "id_": 4,
+            "task": "get staging unblocked",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        }
+    ],
+    "Done": [
+        {
             "id_": 1,
             "task": "read dead letter msgs",
             "minutes": null,
@@ -8,19 +47,24 @@
             "other": null
         },
         {
-            "id_": 2,
-            "task": "indexs and partions into cosmos",
-            "minutes": null,
+            "id_": 5,
+            "task": "write recycle logic",
+            "minutes": 45,
             "parent_id": null,
             "other": null
         }
     ],
-    "InProgress": [],
-    "Done": [],
     "Blocked": [
         {
             "id_": 3,
             "task": "fill db",
+            "minutes": null,
+            "parent_id": null,
+            "other": null
+        },
+        {
+            "id_": 6,
+            "task": "deploy consumer fix",
             "minutes": null,
             "parent_id": null,
             "other": null
